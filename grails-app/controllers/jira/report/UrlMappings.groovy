@@ -9,20 +9,9 @@ class UrlMappings {
             }
         }
 
-        get "/report/index"(
-                controller:"report",
-                action:"index"
-        )
+        get "/telcoReport/index"(controller: "telcoReport", action: "index")
 
-        get "/report/telco"(
-                controller:"report",
-                action:"reportTelco"
-        )
-
-        get "/report/telco/v3"(
-                controller:"report",
-                action:"reportTelcoVersion3"
-        )
+        post "/telcoReport/report"(controller: "telcoReport", action: "run")
 
         "/"(view:"/index")
         "500"(view:'/error')

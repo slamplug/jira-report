@@ -13,7 +13,7 @@ class Util {
         List<Sprint> futureSprints = new ArrayList<>();
 
         for (Team team : teams) {
-            log.debug("processing team ${team.teamName}")
+            log.info("processing team ${team.teamName}")
 
             def currSprint = getCurrentSprint(backlog.bValue, team.sprintPrefix)
             def sprintNumber = currSprint.bValue.intValue()
@@ -129,9 +129,9 @@ class Util {
         def sprintTimelineData = []
 
         futureSprints.each { sprint ->
-            sprintTimelineData.add(buildSprintData(sprint))
+            sprintTimelineData << buildSprintData(sprint)
             sprint.stories.each { story ->
-                sprintTimelineData.add(buildSprintStoryData(sprint.name, story))
+                sprintTimelineData << buildSprintStoryData(sprint.name, story)
             }
         }
 

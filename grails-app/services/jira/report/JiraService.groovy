@@ -3,14 +3,14 @@ package jira.report
 import com.atlassian.jira.rest.client.api.JiraRestClient
 import com.atlassian.jira.rest.client.api.domain.BasicIssue
 import com.atlassian.jira.rest.client.api.domain.Issue
+import com.atlassian.jira.rest.client.api.domain.Project
 import com.atlassian.jira.rest.client.api.domain.SearchResult
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory
 import com.atlassian.util.concurrent.Promise
 import grails.transaction.Transactional
 import grails.util.Pair
 import groovy.util.logging.Log4j
-import jira.report.Sprint
-import jira.report.Story
+import jdk.nashorn.internal.runtime.Version
 import org.codehaus.jettison.json.JSONArray
 
 import java.text.SimpleDateFormat
@@ -30,9 +30,8 @@ class JiraService {
 
     /*
     start of just in to test
-     */
 
-    /*def Pair<List<Story>, List<Sprint>> retrieveBacklogByProjectAndVersion(def project, def version) {
+    def Pair<List<Story>, List<Sprint>> retrieveBacklogByProjectAndVersion(def projectKey, def version) {
         List<Story> stories = new ArrayList<>();
         List<Sprint> sprints = new ArrayList<>();
 
@@ -71,31 +70,41 @@ class JiraService {
 
     def createSprint(String name, boolean isActive, String startDate, String endDate) {
         new Sprint(name: name, isActive: isActive, startDate: sdf.parse(startDate), endDate: sdf.parse(endDate))
-    }*/
+    }
 
-    /*
     end of in to test
      */
 
-    def Pair<List<Story>, List<Sprint>> retrieveBacklogByProject(def project) {
-        log.info("retrieve backlog by project $project")
+    def Pair<List<Story>, List<Sprint>> retrieveBacklogByProject(def projectKey) {
+        log.info("retrieve backlog by project $projectKey")
 
-        def SearchResult result = retrieveJiraIssuesByQuery(
-                "project = $project AND type = Story AND status != Done " +
+        def SearchResult result = jiraSearchClientSearchJQL(
+                "project = $projectKey AND type = Story AND status != Done " +
                         "AND \"Story Points\" != 0 AND \"Story Points\" != 55 AND \"Story Points\" is not EMPTY " +
                         "ORDER BY Rank ASC").claim()
 
         getIssueDetails(result.issues)
     }
-    def Pair<List<Story>, List<Sprint>> retrieveBacklogByProjectAndVersion(def project, def version) {
-        log.info("retrieve backlog by project $project and version $version")
 
-        def SearchResult result = retrieveJiraIssuesByQuery(
-                "project = $project AND type = Story AND fixVersion = $version AND status != Done " +
+    def Pair<List<Story>, List<Sprint>> retrieveBacklogByProjectAndVersion(def projectKey, def version) {
+        log.info("retrieve backlog by project $projectKey and version $version")
+
+        def SearchResult result = jiraSearchClientSearchJQL(
+                "project = $projectKey AND type = Story AND fixVersion = $version AND status != Done " +
                         "AND \"Story Points\" != 0 AND \"Story Points\" != 55 AND \"Story Points\" is not EMPTY " +
                         "ORDER BY Rank ASC").claim()
 
         getIssueDetails(result.issues)
+    }
+
+    def retrieveVersionsForProject(def projectKey) {
+        log.info("retrieve versions by project $projectKey")
+
+        def project = projectClientGetProjectByProjectKey(projectKey).claim()
+        def iterator = project.versions.iterator()
+        iterator.forEachRemaining{ version ->
+            System.out.println("version name : ${version.name}")
+        }
     }
 
     private def Pair<List<Story>, List<Sprint>> getIssueDetails(Iterable<BasicIssue> issues) {
@@ -138,7 +147,11 @@ class JiraService {
         return null
     }
 
-    private def Promise<SearchResult> retrieveJiraIssuesByQuery(final String query) {
+    private def Promise<SearchResult> jiraSearchClientSearchJQL(final String query) {
         restClient.searchClient.searchJql(query)
+    }
+
+    private def Promise<Project> projectClientGetProjectByProjectKey(final String projectKey) {
+        restClient.projectClient.getProject(projectKey)
     }
 }
