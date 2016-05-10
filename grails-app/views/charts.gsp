@@ -89,7 +89,6 @@
        <table cellpadding="2" cellspacing="0">
           <tr>
              <td>
-                <a href="http://developers.google.com/chart/interactive/docs/gallery/piechart">Pie Chart</a>
              </td>
              <td>
                 <div id="piechart"></div>

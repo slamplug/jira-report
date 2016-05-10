@@ -9,6 +9,11 @@ class UrlMappings {
             }
         }
 
+        get "/report/index"(
+                controller:"report",
+                action:"index"
+        )
+
         get "/report/telco"(
                 controller:"report",
                 action:"reportTelco"

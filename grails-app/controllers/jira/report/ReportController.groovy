@@ -7,6 +7,10 @@ class ReportController {
 
     def JiraService jiraService;
 
+    def index() {
+
+    }
+
     def reportTelco() {
 
         log.debug("retrieve telco at scale backlog")
