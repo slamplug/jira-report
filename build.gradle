@@ -29,6 +29,11 @@ ext {
     gradleWrapperVersion = project.gradleWrapperVersion
 }
 
+jar {
+    baseName = 'jira-report'
+    version = '0.0.1-SNAPSHOT'
+}
+
 repositories {
     mavenLocal()
     maven { url "https://repo.grails.org/grails/core" }
