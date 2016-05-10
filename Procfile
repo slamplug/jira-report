@@ -1,1 +1,1 @@
-web: grails prod run-app --port=5000
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar target/jira-report-0.0.1-SNAPSHOT.jar
