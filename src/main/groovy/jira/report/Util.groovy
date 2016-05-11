@@ -81,6 +81,31 @@ class Util {
                             sprint.storyPointCount += remainingCapacity
 
                             pointsToAddToSprint -= remainingCapacity
+
+                            //TODO - if points to add > sprint capacity add another sprint
+                            while (pointsToAddToSprint > team.sprintCapacity) {
+                                log.debug("story points will completly fill sprint")
+
+                                futureSprints.add(sprint)
+
+                                sprint = createSprint("${team.sprintPrefix} ${++sprintNumber}",
+                                        addDaysToDate(sprint.endDate, 1),
+                                        addDaysToDate(sprint.endDate, 1 + SPRINT_LENGTH))
+
+                                story.startDate = sprint.startDate
+                                story.endDate = sprint.endDate
+
+                                sprint.stories.add(new Story(jiraKey: story.jiraKey,
+                                        summary: story.summary,
+                                        storyPoints: story.storyPoints,
+                                        inActiveSprint: story.inActiveSprint,
+                                        labels: story.labels,
+                                        startDate: story.startDate,
+                                        endDate: story.endDate,
+                                        portionInSprint: team.sprintCapacity))
+
+                                pointsToAddToSprint -= team.sprintCapacity
+                            }
                         }
 
                         log.debug("now need to add ${pointsToAddToSprint} to new sprint")
