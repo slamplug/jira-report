@@ -80,7 +80,8 @@ class JiraService {
 
         def SearchResult result = jiraSearchClientSearchJQL(
                 "project = $projectKey AND type = Story AND status != Done " +
-                        "AND \"Story Points\" != 0 AND \"Story Points\" != 55 AND \"Story Points\" is not EMPTY " +
+                        //"AND \"Story Points\" != 0 AND \"Story Points\" != 55 AND \"Story Points\" is not EMPTY " +
+                        "AND \"Story Points\" != 0 AND \"Story Points\" is not EMPTY " +
                         "ORDER BY Rank ASC").claim()
 
         getIssueDetails(result.issues)
@@ -91,7 +92,8 @@ class JiraService {
 
         def SearchResult result = jiraSearchClientSearchJQL(
                 "project = $projectKey AND type = Story AND fixVersion = $version AND status != Done " +
-                        "AND \"Story Points\" != 0 AND \"Story Points\" != 55 AND \"Story Points\" is not EMPTY " +
+                        //"AND \"Story Points\" != 0 AND \"Story Points\" != 55 AND \"Story Points\" is not EMPTY " +
+                        "AND \"Story Points\" != 0 AND \"Story Points\" is not EMPTY " +
                         "ORDER BY Rank ASC").claim()
 
         getIssueDetails(result.issues)
